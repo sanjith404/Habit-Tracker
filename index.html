@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habit & Daily Goal Tracker Dashboard</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --surface-alt: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+      --primary: #0f766e;
+      --primary-hover: #115e59;
+      --primary-light: #ccfbf1;
+      --primary-soft: #f0fdfa;
+      --accent-amber: #d97706;
+      --accent-amber-soft: #fef3c7;
+      --accent-indigo: #4f46e5;
+      --accent-indigo-soft: #e0e7ff;
+      --accent-rose: #e11d48;
+      --accent-rose-soft: #ffe4e6;
+      --accent-emerald: #059669;
+      --accent-emerald-soft: #d1fae5;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-alt: #1e293b;
+      --border: #1f2937;
+      --border-strong: #334155;
+      --text: #f8fafc;
+      --text-muted: #cbd5e1;
+      --text-subtle: #94a3b8;
+      --primary: #14b8a6;
+      --primary-hover: #0d9488;
+      --primary-light: #134e4a;
+      --primary-soft: rgba(20, 184, 166, 0.12);
+      --accent-amber: #f59e0b;
+      --accent-amber-soft: rgba(245, 158, 11, 0.15);
+      --accent-indigo: #818cf8;
+      --accent-indigo-soft: rgba(129, 140, 248, 0.15);
+      --accent-rose: #fb7185;
+      --accent-rose-soft: rgba(251, 113, 133, 0.15);
+      --accent-emerald: #34d399;
+      --accent-emerald-soft: rgba(52, 211, 153, 0.15);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 24px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      padding: 20px 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #059669);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      box-shadow: 0 3px 10px rgba(15, 118, 110, 0.25);
+    }
+
+    .brand-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .live-clock-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 1px solid var(--primary-light);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 0 3px var(--accent-emerald-soft);
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+
+    .brand p {
+      font-size: 0.875rem;
+      color: var(--text-subtle);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .week-nav {
+      display: flex;
+      align-items: center;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .week-label {
+      padding: 4px 12px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      min-width: 185px;
+      text-align: center;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .btn:hover {
+      background: var(--surface-alt);
+      border-color: var(--border-strong);
+    }
+
+    .btn-icon {
+      padding: 6px 10px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .btn-icon:hover {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    /* KPI Summary Strip */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .kpi-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-subtle);
+    }
+
+    .kpi-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .badge-teal { background: var(--primary-soft); color: var(--primary); }
+    .badge-amber { background: var(--accent-amber-soft); color: var(--accent-amber); }
+    .badge-indigo { background: var(--accent-indigo-soft); color: var(--accent-indigo); }
+    .badge-emerald { background: var(--accent-emerald-soft); color: var(--accent-emerald); }
+
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .kpi-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--surface-alt);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Main Content Layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.65fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .card-title-group h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .card-title-group p {
+      font-size: 0.83rem;
+      color: var(--text-subtle);
+    }
+
+    /* Category Filter Pills */
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+    }
+
+    .pill.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Habit Matrix Table */
+    .matrix-wrapper {
+      overflow-x: auto;
+    }
+
+    table.habit-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+
+    .habit-matrix th,
+    .habit-matrix td {
+      padding: 12px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .habit-matrix th:first-child,
+    .habit-matrix td:first-child {
+      text-align: left;
+      padding-left: 4px;
+      min-width: 210px;
+    }
+
+    .habit-matrix thead th {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-subtle);
+      font-weight: 600;
+      padding-bottom: 14px;
+    }
+
+    .day-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 6px 4px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s;
+    }
+
+    .day-header:hover {
+      background: var(--surface-alt);
+    }
+
+    .day-header.selected-day {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .day-header.is-today:not(.selected-day) {
+      border: 1px dashed var(--primary);
+    }
+
+    .day-header .day-num {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .day-header.selected-day .day-num {
+      color: var(--primary);
+    }
+
+    .habit-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .habit-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cat-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .habit-name {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+
+    .habit-meta {
+      font-size: 0.76rem;
+      color: var(--text-subtle);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-left: 17px;
+    }
+
+    /* Check Buttons */
+    .check-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--surface-alt);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-size: 16px;
+      font-weight: 700;
+      transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .check-btn:hover {
+      border-color: var(--primary);
+      transform: scale(1.06);
+    }
+
+    .check-btn.completed {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(15, 118, 110, 0.28);
+    }
+
+    .streak-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--accent-amber-soft);
+      color: var(--accent-amber);
+    }
+
+    .streak-pill.zero {
+      background: var(--surface-alt);
+      color: var(--text-subtle);
+      font-weight: 500;
+    }
+
+    .goal-progress-cell {
+      min-width: 95px;
+    }
+
+    .goal-ratio {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .delete-habit-btn {
+      color: var(--text-subtle);
+      font-size: 14px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      opacity: 0.6;
+    }
+
+    .delete-habit-btn:hover {
+      opacity: 1;
+      background: var(--accent-rose-soft);
+      color: var(--accent-rose);
+    }
+
+    /* Add Habit Inline Bar */
+    .add-habit-bar {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .input, .select {
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 0.86rem;
+      font-family: inherit;
+    }
+
+    .input:focus, .select:focus {
+      outline: 2px solid var(--primary);
+      border-color: transparent;
+      background: var(--surface);
+    }
+
+    .input-grow {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    /* Right Column: Daily Goal Log + Streak Charts */
+    .side-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .daily-goals-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 14px 0;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .daily-goal-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      transition: all 0.15s;
+    }
+
+    .daily-goal-item.done {
+      opacity: 0.72;
+      background: var(--primary-soft);
+      border-color: var(--primary-light);
+    }
+
+    .daily-goal-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .goal-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border-strong);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .daily-goal-item.done .goal-checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .goal-text {
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .daily-goal-item.done .goal-text {
+      text-decoration: line-through;
+      color: var(--text-subtle);
+    }
+
+    .priority-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .prio-high { background: var(--accent-rose-soft); color: var(--accent-rose); }
+    .prio-med { background: var(--accent-amber-soft); color: var(--accent-amber); }
+    .prio-low { background: var(--accent-indigo-soft); color: var(--accent-indigo); }
+
+    .reflection-box {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .reflection-box label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-subtle);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .reflection-textarea {
+      width: 100%;
+      min-height: 64px;
+      resize: vertical;
+      padding: 8px 11px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+    }
+
+    /* Charts Section */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 960px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .svg-chart-container {
+      width: 100%;
+      padding-top: 6px;
+    }
+
+    .streak-bars-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .streak-bar-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .streak-bar-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .streak-bar-track {
+      height: 10px;
+      background: var(--surface-alt);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .streak-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    /* 14-Day Consistency Heatmap */
+    .heatmap-row {
+      display: grid;
+      grid-template-columns: repeat(14, 1fr);
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .heat-cell {
+      aspect-ratio: 1;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    .heat-cell:hover {
+      transform: scale(1.08);
+    }
+
+    .heat-0 { background: var(--surface-alt); color: var(--text-subtle); }
+    .heat-1 { background: #99f6e4; color: #134e4a; }
+    .heat-2 { background: #2dd4bf; color: #042f2e; }
+    .heat-3 { background: #0f766e; color: #ffffff; }
+
+    .legend-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      font-size: 0.76rem;
+      color: var(--text-subtle);
+    }
+
+    .legend-swatches {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">✓</div>
+        <div>
+          <div class="brand-title-row">
+            <h1>Momentum Habit &amp; Daily Goal Studio</h1>
+            <span class="live-clock-pill" title="Synchronized with your device's real-time clock">
+              <span class="live-dot"></span>
+              <span id="liveDateTimeText">Loading live time...</span>
+            </span>
+          </div>
+          <p>Real-time daily goal logger, weekly matrix &amp; live streak analytics</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <div class="week-nav">
+          <button class="btn-icon" id="prevWeekBtn" title="Previous Week">◀</button>
+          <span class="week-label" id="weekRangeLabel">Loading week...</span>
+          <button class="btn-icon" id="nextWeekBtn" title="Next Week">▶</button>
+        </div>
+        <button class="btn" id="todayBtn">Jump to Today</button>
+        <button class="btn" id="exportCsvBtn">Export CSV</button>
+        <button class="btn" id="resetDemoBtn">Reset Sample Data</button>
+        <button class="btn" id="themeToggleBtn">🌙 Dark Mode</button>
+      </div>
+    </header>
+
+    <!-- KPI Summary Row -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-title" id="kpiDayTitle">Selected Day Progress</span>
+          <span class="kpi-badge badge-teal" id="kpiDayBadge">Today</span>
+        </div>
+        <div class="kpi-value" id="kpiDayValue">0 / 0</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="kpiDayBar" style="width: 0%"></div>
+        </div>
+        <div class="kpi-sub" id="kpiDaySub">Habits &amp; daily goals completed</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-title">Weekly Goal Completion</span>
+          <span class="kpi-badge badge-emerald" id="kpiWeekBadge">On Track</span>
+        </div>
+        <div class="kpi-value" id="kpiWeekRate">0%</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="kpiWeekBar" style="width: 0%"></div>
+        </div>
+        <div class="kpi-sub" id="kpiWeekSub">0 of 0 weekly habit targets met</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-title">Top Active Streak</span>
+          <span class="kpi-badge badge-amber">🔥 Active</span>
+        </div>
+        <div class="kpi-value" id="kpiTopStreak">0 days</div>
+        <div class="kpi-sub" id="kpiTopStreakHabit">Complete habits daily to build momentum</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-title">Consistency Score (7d)</span>
+          <span class="kpi-badge badge-indigo" id="kpiStreakDaysBadge">0 Perfect Days</span>
+        </div>
+        <div class="kpi-value" id="kpiTotalCheckins">0</div>
+        <div class="kpi-sub" id="kpiCheckinsSub">Total habit check-ins logged this week</div>
+      </div>
+    </section>
+
+    <!-- Main Interactive Workspace: Matrix + Selected Day Goal Log -->
+    <div class="main-grid">
+      <!-- Left: Weekly Habit Matrix -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>Weekly Habit Check-In Matrix</h2>
+            <p>Click any square to log a completion, or click a day header to inspect its daily goals</p>
+          </div>
+          <div class="filter-pills" id="categoryFilters">
+            <button class="pill active" data-cat="All">All</button>
+            <button class="pill" data-cat="Health">Health</button>
+            <button class="pill" data-cat="Focus">Focus</button>
+            <button class="pill" data-cat="Fitness">Fitness</button>
+            <button class="pill" data-cat="Mindfulness">Mindfulness</button>
+          </div>
+        </div>
+
+        <div class="matrix-wrapper">
+          <table class="habit-matrix">
+            <thead>
+              <tr id="matrixHeaderRow">
+                <th>Habit &amp; Weekly Target</th>
+              </tr>
+            </thead>
+            <tbody id="matrixBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Add New Habit Form -->
+        <form class="add-habit-bar" id="addHabitForm">
+          <input
+            type="text"
+            class="input input-grow"
+            id="newHabitName"
+            placeholder="Add a new recurring habit (e.g., Read 20 pages, Evening stretch)..."
+            required
+          />
+          <select class="select" id="newHabitCategory">
+            <option value="Health">Health</option>
+            <option value="Focus">Focus</option>
+            <option value="Fitness">Fitness</option>
+            <option value="Mindfulness">Mindfulness</option>
+          </select>
+          <select class="select" id="newHabitTarget">
+            <option value="7">Goal: 7 days/wk</option>
+            <option value="6">Goal: 6 days/wk</option>
+            <option value="5" selected>Goal: 5 days/wk</option>
+            <option value="4">Goal: 4 days/wk</option>
+            <option value="3">Goal: 3 days/wk</option>
+          </select>
+          <button type="submit" class="btn btn-primary">+ Add Habit</button>
+        </form>
+      </section>
+
+      <!-- Right: Daily Goals & Reflection Logger for Selected Day -->
+      <aside class="side-stack">
+        <section class="card">
+          <div class="card-header" style="margin-bottom: 10px;">
+            <div class="card-title-group">
+              <h2 id="dailyLogHeading">Daily Goals</h2>
+              <p id="dailyLogSubheading">Log specific one-off goals &amp; milestones for this day</p>
+            </div>
+            <span class="kpi-badge badge-teal" id="dailyGoalCountBadge">0 / 0 Done</span>
+          </div>
+
+          <form style="display: flex; gap: 8px; margin-bottom: 12px;" id="addDailyGoalForm">
+            <input
+              type="text"
+              class="input input-grow"
+              id="newDailyGoalText"
+              placeholder="Log a daily goal (e.g., Ship Q4 deck)..."
+              required
+            />
+            <select class="select" id="newDailyGoalPrio">
+              <option value="High">High</option>
+              <option value="Med" selected>Med</option>
+              <option value="Low">Low</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+
+          <div class="daily-goals-list" id="dailyGoalsList"></div>
+
+          <div class="reflection-box">
+            <label for="dailyReflectionInput">Daily Win / Reflection Note</label>
+            <textarea
+              id="dailyReflectionInput"
+              class="reflection-textarea"
+              placeholder="Jot down your biggest win, energy level, or blocker for today..."
+            ></textarea>
+          </div>
+        </section>
+
+        <!-- 14-Day Momentum Heatmap Card -->
+        <section class="card">
+          <div class="card-title-group">
+            <h2>14-Day Momentum Heatmap</h2>
+            <p>Daily habit completion intensity ending Today</p>
+          </div>
+          <div class="heatmap-row" id="heatmapContainer"></div>
+          <div class="legend-row">
+            <span>Click any date cell to inspect or log</span>
+            <div class="legend-swatches">
+              <span>Low</span>
+              <span class="swatch heat-0"></span>
+              <span class="swatch heat-1"></span>
+              <span class="swatch heat-2"></span>
+              <span class="swatch heat-3"></span>
+              <span>100%</span>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <!-- Bottom Analytics Row: Weekly Streak Chart & Habit Streak Leaderboard -->
+    <section class="charts-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>Weekly Streak &amp; Daily Completion Trend</h2>
+            <p>Daily habit completion rate (%) vs. 80% streak threshold line across the selected week</p>
+          </div>
+          <span class="kpi-badge badge-emerald" id="weeklyTrendSummaryBadge">Avg: 0%</span>
+        </div>
+        <div class="svg-chart-container" id="weeklyStreakChartContainer"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>Habit Streak Leaderboard &amp; Target Attainment</h2>
+            <p>Current consecutive day streak vs. weekly target progress per habit</p>
+          </div>
+        </div>
+        <div class="streak-bars-list" id="habitLeaderboardContainer"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "momentum_habit_dashboard_realtime_v2";
+
+    const CATEGORY_COLORS = {
+      Health: "#059669",
+      Focus: "#4f46e5",
+      Fitness: "#d97706",
+      Mindfulness: "#0f766e"
+    };
+
+    // Real-Time Date Helpers using the user's live system clock
+    function formatISO(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseISO(dateStr) {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function getTodayISO() {
+      return formatISO(new Date());
+    }
+
+    function addDays(dateStr, days) {
+      const dt = parseISO(dateStr);
+      dt.setDate(dt.getDate() + days);
+      return formatISO(dt);
+    }
+
+    function getMondayOfDate(dateStr) {
+      const dt = parseISO(dateStr);
+      const day = dt.getDay(); // 0 = Sun, 1 = Mon, ...
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+      dt.setDate(dt.getDate() + diffToMonday);
+      return formatISO(dt);
+    }
+
+    let currentTodayISO = getTodayISO();
+
+    function buildRelativeLogs(offsets) {
+      const today = getTodayISO();
+      const map = {};
+      offsets.forEach(off => {
+        map[addDays(today, off)] = true;
+      });
+      return map;
+    }
+
+    function getDefaultState() {
+      const today = getTodayISO();
+      const yesterday = addDays(today, -1);
+      const twoDaysAgo = addDays(today, -2);
+      const threeDaysAgo = addDays(today, -3);
+
+      return {
+        selectedDate: today,
+        weekOffset: 0,
+        categoryFilter: "All",
+        darkMode: false,
+        habits: [
+          {
+            id: "h1",
+            name: "Morning Hydration (2L Water)",
+            category: "Health",
+            weeklyTarget: 7,
+            logs: buildRelativeLogs([-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0])
+          },
+          {
+            id: "h2",
+            name: "90m Deep Focus Block (No Distractions)",
+            category: "Focus",
+            weeklyTarget: 5,
+            logs: buildRelativeLogs([-9, -8, -6, -5, -3, -2, -1, 0])
+          },
+          {
+            id: "h3",
+            name: "45m Strength or Zone-2 Cardio",
+            category: "Fitness",
+            weeklyTarget: 4,
+            logs: buildRelativeLogs([-8, -6, -4, -3, -1])
+          },
+          {
+            id: "h4",
+            name: "15m Evening Reading & Digital Sunset",
+            category: "Mindfulness",
+            weeklyTarget: 6,
+            logs: buildRelativeLogs([-7, -6, -5, -4, -3, -2, -1])
+          },
+          {
+            id: "h5",
+            name: "10k Steps Outdoor Walk",
+            category: "Health",
+            weeklyTarget: 5,
+            logs: buildRelativeLogs([-8, -7, -5, -3, -2, 0])
+          }
+        ],
+        dailyGoals: {
+          [threeDaysAgo]: [
+            { id: "g1", text: "Outline weekly sprint priorities", prio: "High", done: true },
+            { id: "g2", text: "Prep healthy meals for the week", prio: "Med", done: true }
+          ],
+          [twoDaysAgo]: [
+            { id: "g3", text: "Complete design & architecture review", prio: "High", done: true },
+            { id: "g4", text: "Inbox zero before 5:00 PM", prio: "Low", done: true }
+          ],
+          [yesterday]: [
+            { id: "g5", text: "Publish progress update & review metrics", prio: "Med", done: true }
+          ],
+          [today]: [
+            { id: "g6", text: "Complete primary deep-work deliverable", prio: "High", done: true },
+            { id: "g7", text: "30-minute evening mobility & stretch session", prio: "Med", done: false },
+            { id: "g8", text: "Plan tomorrow's top 3 priorities", prio: "Low", done: false }
+          ]
+        },
+        reflections: {
+          [yesterday]: "Strong deep work momentum in the morning; kept meetings batched to the afternoon.",
+          [today]: "Hit morning hydration and deep focus block early! Aiming to wrap up mobility work this evening."
+        }
+      };
+    }
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          // Always open on real-time Today by default so the dashboard feels live
+          parsed.selectedDate = getTodayISO();
+          parsed.weekOffset = 0;
+          return parsed;
+        }
+      } catch (e) {
+        console.warn("Storage unavailable, using in-memory state.");
+      }
+      return getDefaultState();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    // Live Clock & Automatic Midnight Rollover Detector
+    function updateLiveClock() {
+      const now = new Date();
+      const liveISO = formatISO(now);
+
+      const dateFormatter = new Intl.DateTimeFormat(undefined, {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+      const timeFormatter = new Intl.DateTimeFormat(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+
+      const clockEl = document.getElementById("liveDateTimeText");
+      if (clockEl) {
+        clockEl.textContent = `${dateFormatter.format(now)} • ${timeFormatter.format(now)}`;
+      }
+
+      // If midnight rolled over while the tab remained open, automatically advance Today!
+      if (liveISO !== currentTodayISO) {
+        const wasOnToday = state.selectedDate === currentTodayISO;
+        currentTodayISO = liveISO;
+        if (wasOnToday) {
+          state.selectedDate = currentTodayISO;
+        }
+        saveState();
+        renderAll();
+      }
+    }
+
+    function getWeekDates(weekOffset = 0) {
+      const baseMonday = getMondayOfDate(currentTodayISO);
+      const startMonday = addDays(baseMonday, weekOffset * 7);
+      const days = [];
+      const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      for (let i = 0; i < 7; i++) {
+        const iso = addDays(startMonday, i);
+        const dt = parseISO(iso);
+        days.push({
+          iso,
+          dayShort: dayNames[i],
+          dayNum: dt.getDate(),
+          monthShort: monthNames[dt.getMonth()],
+          year: dt.getFullYear()
+        });
+      }
+      return days;
+    }
+
+    function computeHabitStreak(habit, refDateStr = currentTodayISO) {
+      let streak = 0;
+      let cursor = refDateStr;
+      if (!habit.logs[cursor]) {
+        cursor = addDays(cursor, -1);
+      }
+      while (habit.logs[cursor]) {
+        streak++;
+        cursor = addDays(cursor, -1);
+      }
+      return streak;
+    }
+
+    function renderAll() {
+      currentTodayISO = getTodayISO();
+      document.documentElement.setAttribute("data-theme", state.darkMode ? "dark" : "light");
+      document.getElementById("themeToggleBtn").textContent = state.darkMode ? "☀️ Light Mode" : "🌙 Dark Mode";
+
+      const todayDt = parseISO(currentTodayISO);
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      document.getElementById("todayBtn").textContent = `Today (${monthNames[todayDt.getMonth()]} ${todayDt.getDate()})`;
+
+      const weekDays = getWeekDates(state.weekOffset);
+      const first = weekDays[0];
+      const last = weekDays[6];
+      document.getElementById("weekRangeLabel").textContent =
+        `${first.monthShort} ${first.dayNum} – ${last.monthShort} ${last.dayNum}, ${last.year}`;
+
+      renderKPIs(weekDays);
+      renderMatrix(weekDays);
+      renderDailyGoalsPanel();
+      renderHeatmap();
+      renderWeeklyStreakChart(weekDays);
+      renderHabitLeaderboard(weekDays);
+    }
+
+    function renderKPIs(weekDays) {
+      const selDate = state.selectedDate;
+      const selDt = parseISO(selDate);
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const dayLabel = selDate === currentTodayISO ? `Today (${monthNames[selDt.getMonth()]} ${selDt.getDate()})` : `${monthNames[selDt.getMonth()]} ${selDt.getDate()}`;
+
+      const habitsDoneSelected = state.habits.filter(h => h.logs[selDate]).length;
+      const totalHabits = state.habits.length;
+      const dayGoals = state.dailyGoals[selDate] || [];
+      const dayGoalsDone = dayGoals.filter(g => g.done).length;
+
+      const combinedDone = habitsDoneSelected + dayGoalsDone;
+      const combinedTotal = totalHabits + dayGoals.length;
+      const combinedPct = combinedTotal > 0 ? Math.round((combinedDone / combinedTotal) * 100) : 0;
+
+      document.getElementById("kpiDayBadge").textContent = dayLabel;
+      document.getElementById("kpiDayValue").textContent = `${combinedDone} / ${combinedTotal}`;
+      document.getElementById("kpiDayBar").style.width = `${combinedPct}%`;
+      document.getElementById("kpiDaySub").textContent =
+        `${habitsDoneSelected}/${totalHabits} habits • ${dayGoalsDone}/${dayGoals.length} daily goals`;
+
+      let totalWeekTarget = 0;
+      let totalWeekChecks = 0;
+      let habitsMeetingGoal = 0;
+
+      state.habits.forEach(h => {
+        totalWeekTarget += h.weeklyTarget;
+        const wkCount = weekDays.filter(d => h.logs[d.iso]).length;
+        totalWeekChecks += wkCount;
+        if (wkCount >= h.weeklyTarget) habitsMeetingGoal++;
+      });
+
+      const weekRate = totalWeekTarget > 0 ? Math.min(100, Math.round((totalWeekChecks / totalWeekTarget) * 100)) : 0;
+      document.getElementById("kpiWeekRate").textContent = `${weekRate}%`;
+      document.getElementById("kpiWeekBar").style.width = `${weekRate}%`;
+      document.getElementById("kpiWeekBadge").textContent =
+        weekRate >= 80 ? "Strong Pace" : weekRate >= 50 ? "Building" : "Needs Focus";
+      document.getElementById("kpiWeekSub").textContent =
+        `${habitsMeetingGoal} of ${totalHabits} weekly habit targets met`;
+
+      let topStreak = 0;
+      let topHabitName = "No active streaks yet";
+      state.habits.forEach(h => {
+        const s = computeHabitStreak(h, currentTodayISO);
+        if (s > topStreak) {
+          topStreak = s;
+          topHabitName = h.name;
+        }
+      });
+      document.getElementById("kpiTopStreak").textContent = `${topStreak} ${topStreak === 1 ? "day" : "days"}`;
+      document.getElementById("kpiTopStreakHabit").textContent = topHabitName;
+
+      let strongDays = 0;
+      weekDays.forEach(d => {
+        const done = state.habits.filter(h => h.logs[d.iso]).length;
+        if (totalHabits > 0 && done / totalHabits >= 0.8) strongDays++;
+      });
+      document.getElementById("kpiTotalCheckins").textContent = `${totalWeekChecks}`;
+      document.getElementById("kpiStreakDaysBadge").textContent = `${strongDays}/7 High-Streak Days`;
+    }
+
+    function renderMatrix(weekDays) {
+      const headerRow = document.getElementById("matrixHeaderRow");
+      headerRow.innerHTML = `<th>Habit &amp; Weekly Target</th>`;
+
+      weekDays.forEach(d => {
+        const isSelected = d.iso === state.selectedDate;
+        const isToday = d.iso === currentTodayISO;
+        const th = document.createElement("th");
+        th.innerHTML = `
+          <div class="day-header ${isSelected ? "selected-day" : ""} ${isToday ? "is-today" : ""}" data-iso="${d.iso}" title="${isToday ? "Today" : d.iso}">
+            <span>${d.dayShort}${isToday ? " •" : ""}</span>
+            <span class="day-num">${d.dayNum}</span>
+          </div>
+        `;
+        th.querySelector(".day-header").addEventListener("click", () => {
+          state.selectedDate = d.iso;
+          saveState();
+          renderAll();
+        });
+        headerRow.appendChild(th);
+      });
+
+      const extraHeaders = ["Weekly Goal", "Streak", ""];
+      extraHeaders.forEach(text => {
+        const th = document.createElement("th");
+        th.textContent = text;
+        headerRow.appendChild(th);
+      });
+
+      const tbody = document.getElementById("matrixBody");
+      tbody.innerHTML = "";
+
+      const filteredHabits = state.habits.filter(
+        h => state.categoryFilter === "All" || h.category === state.categoryFilter
+      );
+
+      filteredHabits.forEach(habit => {
+        const tr = document.createElement("tr");
+        const color = CATEGORY_COLORS[habit.category] || "#0f766e";
+        const wkCount = weekDays.filter(d => habit.logs[d.iso]).length;
+        const wkPct = Math.min(100, Math.round((wkCount / habit.weeklyTarget) * 100));
+        const streak = computeHabitStreak(habit, currentTodayISO);
+
+        let cellsHtml = `
+          <td>
+            <div class="habit-info">
+              <div class="habit-name-row">
+                <span class="cat-dot" style="background:${color}"></span>
+                <span class="habit-name">${escapeHtml(habit.name)}</span>
+              </div>
+              <div class="habit-meta">
+                <span>${habit.category}</span>
+                <span>•</span>
+                <span>Target: ${habit.weeklyTarget}d/wk</span>
+              </div>
+            </div>
+          </td>
+        `;
+
+        weekDays.forEach(d => {
+          const done = !!habit.logs[d.iso];
+          cellsHtml += `
+            <td>
+              <button
+                type="button"
+                class="check-btn ${done ? "completed" : ""}"
+                data-habit="${habit.id}"
+                data-date="${d.iso}"
+                title="Toggle ${escapeHtml(habit.name)} on ${d.dayShort}, ${d.monthShort} ${d.dayNum}"
+              >✓</button>
+            </td>
+          `;
+        });
+
+        cellsHtml += `
+          <td class="goal-progress-cell">
+            <div class="goal-ratio">
+              <span>${wkCount}/${habit.weeklyTarget}d</span>
+              <span>${wkPct}%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${wkPct}%; background:${color}"></div>
+            </div>
+          </td>
+          <td>
+            <span class="streak-pill ${streak === 0 ? "zero" : ""}">
+              🔥 ${streak}d
+            </span>
+          </td>
+          <td>
+            <button type="button" class="delete-habit-btn" data-delete="${habit.id}" title="Remove habit">✕</button>
+          </td>
+        `;
+
+        tr.innerHTML = cellsHtml;
+
+        tr.querySelectorAll(".check-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const hId = btn.getAttribute("data-habit");
+            const dt = btn.getAttribute("data-date");
+            const targetHabit = state.habits.find(item => item.id === hId);
+            if (targetHabit) {
+              targetHabit.logs[dt] = !targetHabit.logs[dt];
+              state.selectedDate = dt;
+              saveState();
+              renderAll();
+            }
+          });
+        });
+
+        const delBtn = tr.querySelector(".delete-habit-btn");
+        delBtn.addEventListener("click", () => {
+          state.habits = state.habits.filter(item => item.id !== habit.id);
+          saveState();
+          renderAll();
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderDailyGoalsPanel() {
+      const selDate = state.selectedDate;
+      const dt = parseISO(selDate);
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const isToday = selDate === currentTodayISO;
+
+      document.getElementById("dailyLogHeading").textContent =
+        `Daily Goals — ${dayNames[dt.getDay()]}, ${monthNames[dt.getMonth()]} ${dt.getDate()}${isToday ? " (Today)" : ""}`;
+
+      const goals = state.dailyGoals[selDate] || [];
+      const doneCount = goals.filter(g => g.done).length;
+      document.getElementById("dailyGoalCountBadge").textContent = `${doneCount} / ${goals.length} Done`;
+
+      const listEl = document.getElementById("dailyGoalsList");
+      listEl.innerHTML = "";
+
+      if (goals.length === 0) {
+        listEl.innerHTML = `
+          <div style="padding: 18px; text-align: center; color: var(--text-subtle); font-size: 0.85rem; border: 1px dashed var(--border); border-radius: 8px;">
+            No specific daily goals logged for this date yet. Add one above!
+          </div>
+        `;
+      } else {
+        goals.forEach(goal => {
+          const item = document.createElement("div");
+          item.className = `daily-goal-item ${goal.done ? "done" : ""}`;
+          const prioClass = goal.prio === "High" ? "prio-high" : goal.prio === "Med" ? "prio-med" : "prio-low";
+          item.innerHTML = `
+            <div class="daily-goal-left">
+              <span class="goal-checkbox">✓</span>
+              <span class="goal-text">${escapeHtml(goal.text)}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="priority-tag ${prioClass}">${goal.prio}</span>
+              <button type="button" class="delete-habit-btn" title="Delete goal">✕</button>
+            </div>
+          `;
+
+          item.querySelector(".daily-goal-left").addEventListener("click", () => {
+            goal.done = !goal.done;
+            saveState();
+            renderAll();
+          });
+
+          item.querySelector(".delete-habit-btn").addEventListener("click", () => {
+            state.dailyGoals[selDate] = goals.filter(g => g.id !== goal.id);
+            saveState();
+            renderAll();
+          });
+
+          listEl.appendChild(item);
+        });
+      }
+
+      const reflectionInput = document.getElementById("dailyReflectionInput");
+      reflectionInput.value = state.reflections[selDate] || "";
+    }
+
+    function renderHeatmap() {
+      const container = document.getElementById("heatmapContainer");
+      container.innerHTML = "";
+      const totalHabits = state.habits.length || 1;
+
+      for (let i = 13; i >= 0; i--) {
+        const iso = addDays(currentTodayISO, -i);
+        const dt = parseISO(iso);
+        const doneCount = state.habits.filter(h => h.logs[iso]).length;
+        const ratio = doneCount / totalHabits;
+
+        let heatClass = "heat-0";
+        if (ratio >= 0.8) heatClass = "heat-3";
+        else if (ratio >= 0.5) heatClass = "heat-2";
+        else if (ratio > 0) heatClass = "heat-1";
+
+        const cell = document.createElement("div");
+        cell.className = `heat-cell ${heatClass}`;
+        cell.title = `${iso}${iso === currentTodayISO ? " (Today)" : ""}: ${doneCount}/${state.habits.length} habits (${Math.round(ratio * 100)}%)`;
+        cell.innerHTML = `<span>${dt.getDate()}</span>`;
+        cell.addEventListener("click", () => {
+          state.selectedDate = iso;
+          saveState();
+          renderAll();
+        });
+        container.appendChild(cell);
+      }
+    }
+
+    function renderWeeklyStreakChart(weekDays) {
+      const container = document.getElementById("weeklyStreakChartContainer");
+      const totalHabits = state.habits.length || 1;
+
+      const dayStats = weekDays.map(d => {
+        const done = state.habits.filter(h => h.logs[d.iso]).length;
+        const pct = Math.round((done / totalHabits) * 100);
+        return { ...d, done, pct };
+      });
+
+      const avgPct = Math.round(dayStats.reduce((acc, s) => acc + s.pct, 0) / 7);
+      document.getElementById("weeklyTrendSummaryBadge").textContent = `Weekly Avg: ${avgPct}%`;
+
+      const width = 680;
+      const height = 240;
+      const padLeft = 42;
+      const padRight = 24;
+      const padTop = 26;
+      const padBottom = 38;
+      const plotW = width - padLeft - padRight;
+      const plotH = height - padTop - padBottom;
+
+      const stepX = plotW / 7;
+      const barWidth = 38;
+
+      let gridLines = "";
+      [0, 25, 50, 75, 100].forEach(val => {
+        const y = padTop + plotH - (val / 100) * plotH;
+        gridLines += `
+          <line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="var(--border)" stroke-dasharray="3,3" />
+          <text x="${padLeft - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="var(--text-subtle)">${val}%</text>
+        `;
+      });
+
+      const targetY = padTop + plotH - 0.8 * plotH;
+      const targetLine = `
+        <line x1="${padLeft}" y1="${targetY}" x2="${width - padRight}" y2="${targetY}" stroke="#d97706" stroke-width="1.5" stroke-dasharray="5,4" />
+        <text x="${width - padRight - 4}" y="${targetY - 6}" text-anchor="end" font-size="10.5" font-weight="600" fill="#d97706">80% Streak Threshold</text>
+      `;
+
+      let bars = "";
+      let points = [];
+
+      dayStats.forEach((st, idx) => {
+        const cx = padLeft + stepX * idx + stepX / 2;
+        const barH = Math.max(4, (st.pct / 100) * plotH);
+        const barY = padTop + plotH - barH;
+        const isSelected = st.iso === state.selectedDate;
+        const isToday = st.iso === currentTodayISO;
+        const fill = st.pct >= 80 ? "var(--primary)" : st.pct >= 50 ? "#14b8a6" : "var(--border-strong)";
+
+        points.push(`${cx},${barY}`);
+
+        bars += `
+          <g class="chart-bar-group" style="cursor:pointer" data-iso="${st.iso}">
+            <rect
+              x="${cx - barWidth / 2}"
+              y="${barY}"
+              width="${barWidth}"
+              height="${barH}"
+              rx="6"
+              fill="${fill}"
+              opacity="${isSelected ? "1" : "0.82"}"
+              stroke="${isSelected ? "var(--text)" : "none"}"
+              stroke-width="${isSelected ? "2" : "0"}"
+            />
+            <text x="${cx}" y="${barY - 7}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">${st.pct}%</text>
+            <text x="${cx}" y="${height - 14}" text-anchor="middle" font-size="11.5" font-weight="${isSelected || isToday ? "700" : "500"}" fill="${isSelected ? "var(--primary)" : "var(--text-muted)"}">${st.dayShort} ${st.dayNum}${isToday ? "•" : ""}</text>
+          </g>
+        `;
+      });
+
+      const polyline = `
+        <polyline
+          fill="none"
+          stroke="#4f46e5"
+          stroke-width="2.5"
+          points="${points.join(" ")}"
+        />
+      `;
+
+      const dots = points
+        .map(pt => {
+          const [x, y] = pt.split(",");
+          return `<circle cx="${x}" cy="${y}" r="4" fill="#4f46e5" stroke="var(--surface)" stroke-width="1.5" />`;
+        })
+        .join("");
+
+      container.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" width="100%" height="auto" role="img" aria-label="Weekly habit completion chart">
+          ${gridLines}
+          ${targetLine}
+          ${bars}
+          ${polyline}
+          ${dots}
+        </svg>
+      `;
+
+      container.querySelectorAll(".chart-bar-group").forEach(grp => {
+        grp.addEventListener("click", () => {
+          state.selectedDate = grp.getAttribute("data-iso");
+          saveState();
+          renderAll();
+        });
+      });
+    }
+
+    function renderHabitLeaderboard(weekDays) {
+      const container = document.getElementById("habitLeaderboardContainer");
+      container.innerHTML = "";
+
+      const ranked = state.habits
+        .map(h => {
+          const streak = computeHabitStreak(h, currentTodayISO);
+          const wkCount = weekDays.filter(d => h.logs[d.iso]).length;
+          const wkPct = Math.min(100, Math.round((wkCount / h.weeklyTarget) * 100));
+          return { ...h, streak, wkCount, wkPct };
+        })
+        .sort((a, b) => b.streak - a.streak || b.wkPct - a.wkPct);
+
+      const maxStreak = Math.max(7, ...ranked.map(r => r.streak));
+
+      ranked.forEach(item => {
+        const color = CATEGORY_COLORS[item.category] || "var(--primary)";
+        const barPct = Math.min(100, Math.round((item.streak / maxStreak) * 100));
+        const row = document.createElement("div");
+        row.className = "streak-bar-item";
+        row.innerHTML = `
+          <div class="streak-bar-top">
+            <span>${escapeHtml(item.name)}</span>
+            <span style="color:${color}">🔥 ${item.streak}d streak • ${item.wkCount}/${item.weeklyTarget} wk</span>
+          </div>
+          <div class="streak-bar-track">
+            <div class="streak-bar-fill" style="width:${barPct}%; background:${color}"></div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // Event Listeners
+    document.getElementById("prevWeekBtn").addEventListener("click", () => {
+      state.weekOffset -= 1;
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById("nextWeekBtn").addEventListener("click", () => {
+      state.weekOffset += 1;
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById("todayBtn").addEventListener("click", () => {
+      state.weekOffset = 0;
+      state.selectedDate = getTodayISO();
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById("themeToggleBtn").addEventListener("click", () => {
+      state.darkMode = !state.darkMode;
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById("resetDemoBtn").addEventListener("click", () => {
+      state = getDefaultState();
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById("categoryFilters").addEventListener("click", e => {
+      const btn = e.target.closest(".pill");
+      if (!btn) return;
+      state.categoryFilter = btn.getAttribute("data-cat");
+      document.querySelectorAll("#categoryFilters .pill").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById("addHabitForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const nameInput = document.getElementById("newHabitName");
+      const catSelect = document.getElementById("newHabitCategory");
+      const targetSelect = document.getElementById("newHabitTarget");
+      const name = nameInput.value.trim();
+      if (!name) return;
+
+      state.habits.push({
+        id: "h_" + Date.now(),
+        name,
+        category: catSelect.value,
+        weeklyTarget: Number(targetSelect.value),
+        logs: { [state.selectedDate]: true }
+      });
+      nameInput.value = "";
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById("addDailyGoalForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const textInput = document.getElementById("newDailyGoalText");
+      const prioSelect = document.getElementById("newDailyGoalPrio");
+      const text = textInput.value.trim();
+      if (!text) return;
+
+      if (!state.dailyGoals[state.selectedDate]) {
+        state.dailyGoals[state.selectedDate] = [];
+      }
+      state.dailyGoals[state.selectedDate].push({
+        id: "g_" + Date.now(),
+        text,
+        prio: prioSelect.value,
+        done: false
+      });
+      textInput.value = "";
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById("dailyReflectionInput").addEventListener("input", e => {
+      state.reflections[state.selectedDate] = e.target.value;
+      saveState();
+    });
+
+    document.getElementById("exportCsvBtn").addEventListener("click", () => {
+      const weekDays = getWeekDates(state.weekOffset);
+      const headers = ["Habit Name", "Category", "Weekly Target", ...weekDays.map(d => d.iso), "Weekly Count", "Current Streak"];
+      const rows = state.habits.map(h => {
+        const checks = weekDays.map(d => (h.logs[d.iso] ? "1" : "0"));
+        const wkCount = weekDays.filter(d => h.logs[d.iso]).length;
+        const streak = computeHabitStreak(h, currentTodayISO);
+        return [
+          `"${h.name.replace(/"/g, '""')}"`,
+          h.category,
+          h.weeklyTarget,
+          ...checks,
+          wkCount,
+          streak
+        ].join(",");
+      });
+      const csv = [headers.join(","), ...rows].join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `habit_tracker_${weekDays[0].iso}_to_${weekDays[6].iso}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Initial render & start 1-second real-time clock + midnight rollover watcher
+    updateLiveClock();
+    renderAll();
+    setInterval(updateLiveClock, 1000);
+  </script>
+</body>
+</html>
