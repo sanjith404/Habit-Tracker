@@ -2,7 +2,6 @@
 
 A modern, responsive habit-tracking and daily goal dashboard with live system clock synchronization, weekly check-in matrix, and real-time streak analytics. Built with clean vanilla web standards (HTML5, CSS3, JavaScript) and zero external dependencies.
 
-[License: MIT](https://www.google.com/search?q=LICENSE)
 [Deploy with GitHub Pages](https://www.google.com/search?q=https%3A%2F%2Fpages.github.com%2F)
 [Pure Vanilla](https://www.google.com/search?q=index.html)
 
@@ -71,7 +70,3 @@ habit-tracker/
 ```
 
 ---
-
-## 📄 License
-
-Distributed under the [MIT License](https://www.google.com/search?q=LICENSE).
